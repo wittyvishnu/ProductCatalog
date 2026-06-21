@@ -39,29 +39,29 @@ public class JwtUtils {
     }
 
     public String getEmailFromJwtToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key())
+        return Jwts.parser()
+                .verifyWith(key())
                 .build()
-                .parseClaimsJws(token)
-                .getBody()
+                .parseSignedClaims(token)
+                .getPayload()
                 .getSubject();
     }
 
     public boolean validateJwtToken(String authToken) {
         try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key())
+            Jwts.parser()
+                    .verifyWith(key())
                     .build()
-                    .parseClaimsJws(authToken);
+                    .parseSignedClaims(authToken);
             return true;
         } catch (MalformedJwtException e) {
-            System.out.println("[v0] Invalid JWT token: {}", e.getMessage());
+            System.out.println("[v0] Invalid JWT token: " + e.getMessage());
         } catch (ExpiredJwtException e) {
-            System.out.println("[v0] Expired JWT token: {}", e.getMessage());
+            System.out.println("[v0] Expired JWT token: " + e.getMessage());
         } catch (UnsupportedJwtException e) {
-            System.out.println("[v0] Unsupported JWT token: {}", e.getMessage());
+            System.out.println("[v0] Unsupported JWT token: " + e.getMessage());
         } catch (IllegalArgumentException e) {
-            System.out.println("[v0] JWT claims string is empty: {}", e.getMessage());
+            System.out.println("[v0] JWT claims string is empty: " + e.getMessage());
         }
         return false;
     }
